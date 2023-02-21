@@ -1,25 +1,14 @@
-i_am_a_profile_name:  # your profile name from dbt_project.yml
-  target: dev  # your development environment
+twitter_dbt:
   outputs:
-    
     dev:
-      type: bigquery
+      dataset: "twitter-project-328515"
+      job_execution_timeout_seconds: 300
+      job_retries: 1
+      keyfile: "secrets/dbt-service-keyfile.json"
+      location: US
       method: service-account
-      project: Twitter Project  # name of the project in BigQuery
-      dataset: dbt_nick_dev  # your dataset for development (usually your name)
-      threads: 4
-      keyfile: /secrets/dbt-service-keyfile
-      timeout_seconds: 300
       priority: interactive
-      retries: 1
-    
-    prod: # your production environment
+      project: "twitter-project-328515"
+      threads: 4
       type: bigquery
-      method: service-account
-      project: Twitter Project  # name of the project in BigQuery
-      dataset: dbt_prod # your dataset for production
-      threads: 4
-      keyfile: /secrets/dbt-service-keyfile
-      timeout_seconds: 300
-      priority: interactive
-      retries: 1
+  target: dev
