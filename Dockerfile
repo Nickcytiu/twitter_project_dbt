@@ -1,18 +1,13 @@
-FROM python:3.8-alpine as builder
-
+FROM golang:1.13 as builder
 WORKDIR /app
+COPY invoke.go ./
+RUN CGO_ENABLED=0 GOOS=linux go build -v -o server
 
-COPY requirements.txt ./
-RUN pip install --no-cache-dir -r requirements.txt
+FROM ghcr.io/dbt-labs/dbt-bigquery:1.2.latest
+USER root
+WORKDIR /dbt
+COPY --from=builder /app/server ./
+COPY script.sh ./
+COPY . ./
 
-COPY invoke.py ./
-
-RUN chmod +x invoke.py
-
-FROM python:3.8-alpine
-
-WORKDIR /app
-
-COPY --from=builder /app/invoke.py ./
-
-CMD ["./invoke.py"]
+ENTRYPOINT "./server"
